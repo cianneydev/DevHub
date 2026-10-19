@@ -1,6 +1,6 @@
 # 🚀 Démarrage rapide
 
-Bienvenue dans **DevHub** ! Ce guide vous montre comment l'installer et l'utiliser en 2 minutes.
+Bienvenue dans **DevHub-** ! Ce guide vous montre comment l'installer et l'utiliser en 2 minutes.
 
 ## 📦 Prérequis
 
@@ -12,8 +12,8 @@ Bienvenue dans **DevHub** ! Ce guide vous montre comment l'installer et l'utilis
 ### Depuis les sources (actuellement)
 
 ```bash
-git clone https://github.com/cianneydev/devhub.git
-cd devhub
+git clone https://github.com/cianneydev/devhub-.git
+cd devhub-
 npm install
 npm run build
 npm link
