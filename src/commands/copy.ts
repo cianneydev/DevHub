@@ -18,7 +18,10 @@ export function registerCopyCommand(program: Command): void {
       try {
         await clipboardy.write(snippet.code);
         logger.success(`Snippet "${name}" copié !`);
-        logger.info(`📋 ${snippet.code.slice(0, 50)}${snippet.code.length > 50 ? '…' : ''}`);
+        const preview = snippet.code.length > 50
+          ? `${snippet.code.slice(0, 50)}…`
+          : snippet.code;
+        logger.info(`📋 ${preview}`);
       } catch (err) {
         logger.error(`Impossible de copier : ${(err as Error).message}`);
       }
