@@ -4,7 +4,8 @@ export default defineConfig({
   title: 'DevHub',
   description: 'Le hub central du développeur moderne — CLI tout-en-un',
 
-  base: '/devhub/',
+  // ✅ Casse corrigée pour correspondre à l'URL GitHub Pages
+  base: '/DevHub/',
 
   ignoreDeadLinks: true,
 
@@ -14,7 +15,7 @@ export default defineConfig({
     nav: [
       { text: 'Accueil', link: '/' },
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'GitHub', link: 'https://github.com/cianneydev/devhub' },
+      { text: 'GitHub', link: 'https://github.com/cianneydev/DevHub' },
     ],
 
     sidebar: [
@@ -37,7 +38,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/cianneydev/devhub' },
+      { icon: 'github', link: 'https://github.com/cianneydev/DevHub' },
     ],
 
     footer: {
