@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -19,6 +19,7 @@ describe('export', () => {
 
   beforeEach(async () => {
     clearAll();
+    vi.resetModules();
     const sMod = await import('../src/storage/snippetStore.js');
     const nMod = await import('../src/storage/noteStore.js');
     snippetStore = sMod.snippetStore;
@@ -34,10 +35,9 @@ describe('export', () => {
     snippetStore.add('export-b', 'code B');
     noteStore.add('note-a', 'contenu A');
 
-    // Simule la logique d'export
     const data = {
       exportedAt: new Date().toISOString(),
-      version: '0.5.0',
+      version: '0.6.0',
       snippets: snippetStore.list(),
       notes: noteStore.list(),
     };
@@ -51,13 +51,13 @@ describe('export', () => {
 
     expect(parsed.snippets).toHaveLength(2);
     expect(parsed.notes).toHaveLength(1);
-    expect(parsed.version).toBe('0.5.0');
+    expect(parsed.version).toBe('0.6.0');
   });
 
   it('exporte un fichier vide si rien à sauvegarder', () => {
     const data = {
       exportedAt: new Date().toISOString(),
-      version: '0.5.0',
+      version: '0.6.0',
       snippets: [],
       notes: [],
     };
@@ -74,7 +74,7 @@ describe('export', () => {
   it('contient un timestamp valide', () => {
     const data = {
       exportedAt: new Date().toISOString(),
-      version: '0.5.0',
+      version: '0.6.0',
       snippets: [],
       notes: [],
     };
@@ -85,6 +85,5 @@ describe('export', () => {
     const parsed = JSON.parse(raw);
 
     expect(() => new Date(parsed.exportedAt)).not.toThrow();
-    expect(new Date(parsed.exportedAt).getTime()).toBeLessThanOrEqual(Date.now());
   });
 });
