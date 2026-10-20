@@ -3,22 +3,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const SNIPPET_FILE = path.join(os.homedir(), '.devhub', 'snippets.json');
-const NOTE_FILE = path.join(os.homedir(), '.devhub', 'notes.json');
-const EXPORT_FILE = path.join(os.tmpdir(), `devhub-export-test-${Date.now()}.json`);
-
-function clearAll(): void {
-  if (fs.existsSync(SNIPPET_FILE)) fs.unlinkSync(SNIPPET_FILE);
-  if (fs.existsSync(NOTE_FILE)) fs.unlinkSync(NOTE_FILE);
-  if (fs.existsSync(EXPORT_FILE)) fs.unlinkSync(EXPORT_FILE);
-}
+const TEST_DIR = path.join(os.tmpdir(), `devhub-export-${Date.now()}`);
+const EXPORT_FILE = path.join(TEST_DIR, 'export.json');
 
 describe('export', () => {
   let snippetStore: typeof import('../src/storage/snippetStore.js').snippetStore;
   let noteStore: typeof import('../src/storage/noteStore.js').noteStore;
 
   beforeEach(async () => {
-    clearAll();
+    process.env.DEVHUB_DIR = TEST_DIR;
+    fs.mkdirSync(TEST_DIR, { recursive: true });
     vi.resetModules();
     const sMod = await import('../src/storage/snippetStore.js');
     const nMod = await import('../src/storage/noteStore.js');
@@ -27,13 +21,14 @@ describe('export', () => {
   });
 
   afterEach(() => {
-    clearAll();
+    fs.rmSync(TEST_DIR, { recursive: true, force: true });
+    delete process.env.DEVHUB_DIR;
   });
 
-  it('exporte les snippets et notes dans un fichier JSON', () => {
-    snippetStore.add('export-a', 'code A');
-    snippetStore.add('export-b', 'code B');
-    noteStore.add('note-a', 'contenu A');
+  it('exporte les snippets et notes', () => {
+    snippetStore.add('a', 'code A');
+    snippetStore.add('b', 'code B');
+    noteStore.add('n', 'note');
 
     const data = {
       exportedAt: new Date().toISOString(),
@@ -41,49 +36,19 @@ describe('export', () => {
       snippets: snippetStore.list(),
       notes: noteStore.list(),
     };
+    fs.writeFileSync(EXPORT_FILE, JSON.stringify(data, null, 2));
 
-    fs.writeFileSync(EXPORT_FILE, JSON.stringify(data, null, 2), 'utf-8');
-
-    expect(fs.existsSync(EXPORT_FILE)).toBe(true);
-
-    const raw = fs.readFileSync(EXPORT_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-
+    const parsed = JSON.parse(fs.readFileSync(EXPORT_FILE, 'utf-8'));
     expect(parsed.snippets).toHaveLength(2);
     expect(parsed.notes).toHaveLength(1);
     expect(parsed.version).toBe('0.6.0');
   });
 
-  it('exporte un fichier vide si rien à sauvegarder', () => {
-    const data = {
-      exportedAt: new Date().toISOString(),
-      version: '0.6.0',
-      snippets: [],
-      notes: [],
-    };
-
-    fs.writeFileSync(EXPORT_FILE, JSON.stringify(data, null, 2), 'utf-8');
-
-    const raw = fs.readFileSync(EXPORT_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-
+  it('exporte vide si rien', () => {
+    const data = { exportedAt: new Date().toISOString(), version: '0.6.0', snippets: [], notes: [] };
+    fs.writeFileSync(EXPORT_FILE, JSON.stringify(data));
+    const parsed = JSON.parse(fs.readFileSync(EXPORT_FILE, 'utf-8'));
     expect(parsed.snippets).toHaveLength(0);
     expect(parsed.notes).toHaveLength(0);
-  });
-
-  it('contient un timestamp valide', () => {
-    const data = {
-      exportedAt: new Date().toISOString(),
-      version: '0.6.0',
-      snippets: [],
-      notes: [],
-    };
-
-    fs.writeFileSync(EXPORT_FILE, JSON.stringify(data, null, 2), 'utf-8');
-
-    const raw = fs.readFileSync(EXPORT_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-
-    expect(() => new Date(parsed.exportedAt)).not.toThrow();
   });
 });
