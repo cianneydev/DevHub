@@ -29,6 +29,7 @@ export default defineConfig({
         text: '📚 Commandes',
         items: [
           { text: 'Snippets', link: '/guide/snippets' },
+          { text: 'Copier', link: '/guide/copy' },      // ← ✅ LA LIGNE MANQUANTE
           { text: 'Notes', link: '/guide/notes' },
           { text: 'Recherche', link: '/guide/search' },
           { text: 'Avancé', link: '/guide/advanced' },
