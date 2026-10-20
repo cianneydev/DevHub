@@ -11,7 +11,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "logo.png"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts",
