@@ -13,7 +13,8 @@ interface StoreData {
   notes: Note[];
 }
 
-const DEVHUB_DIR = path.join(os.homedir(), '.devhub');
+// ✅ Permet d'isoler les tests via DEVHUB_DIR
+const DEVHUB_DIR = process.env.DEVHUB_DIR || path.join(os.homedir(), '.devhub');
 const STORE_FILE = path.join(DEVHUB_DIR, 'notes.json');
 
 function ensureDir(): void {
@@ -24,11 +25,7 @@ function ensureDir(): void {
 
 function readStore(): StoreData {
   ensureDir();
-
-  if (!fs.existsSync(STORE_FILE)) {
-    return { notes: [] };
-  }
-
+  if (!fs.existsSync(STORE_FILE)) return { notes: [] };
   try {
     const raw = fs.readFileSync(STORE_FILE, 'utf-8');
     return JSON.parse(raw) as StoreData;
@@ -49,18 +46,9 @@ export const noteStore = {
 
   add(title: string, content: string): boolean {
     const data = readStore();
-    const exists = data.notes.find((n) => n.title === title);
-
-    if (exists) return false;
-
+    if (data.notes.find((n) => n.title === title)) return false;
     const now = new Date().toISOString();
-    data.notes.push({
-      title,
-      content,
-      createdAt: now,
-      updatedAt: now,
-    });
-
+    data.notes.push({ title, content, createdAt: now, updatedAt: now });
     writeStore(data);
     return true;
   },
@@ -68,17 +56,14 @@ export const noteStore = {
   remove(title: string): boolean {
     const data = readStore();
     const index = data.notes.findIndex((n) => n.title === title);
-
     if (index === -1) return false;
-
     data.notes.splice(index, 1);
     writeStore(data);
     return true;
   },
 
   get(title: string): Note | null {
-    const data = readStore();
-    return data.notes.find((n) => n.title === title) ?? null;
+    return readStore().notes.find((n) => n.title === title) ?? null;
   },
 
   count(): number {
