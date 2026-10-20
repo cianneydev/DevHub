@@ -1,22 +1,18 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const SNIPPET_FILE = path.join(os.homedir(), '.devhub', 'snippets.json');
-const NOTE_FILE = path.join(os.homedir(), '.devhub', 'notes.json');
-
-function clearAll(): void {
-  if (fs.existsSync(SNIPPET_FILE)) fs.unlinkSync(SNIPPET_FILE);
-  if (fs.existsSync(NOTE_FILE)) fs.unlinkSync(NOTE_FILE);
-}
+const TEST_DIR = path.join(os.tmpdir(), `devhub-stats-${Date.now()}`);
 
 describe('stats', () => {
   let snippetStore: typeof import('../src/storage/snippetStore.js').snippetStore;
   let noteStore: typeof import('../src/storage/noteStore.js').noteStore;
 
   beforeEach(async () => {
-    clearAll();
+    process.env.DEVHUB_DIR = TEST_DIR;
+    fs.mkdirSync(TEST_DIR, { recursive: true });
+    vi.resetModules();
     const sMod = await import('../src/storage/snippetStore.js');
     const nMod = await import('../src/storage/noteStore.js');
     snippetStore = sMod.snippetStore;
@@ -24,7 +20,8 @@ describe('stats', () => {
   });
 
   afterEach(() => {
-    clearAll();
+    fs.rmSync(TEST_DIR, { recursive: true, force: true });
+    delete process.env.DEVHUB_DIR;
   });
 
   it('compte 0 snippet et 0 note au départ', () => {
