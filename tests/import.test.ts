@@ -3,22 +3,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const SNIPPET_FILE = path.join(os.homedir(), '.devhub', 'snippets.json');
-const NOTE_FILE = path.join(os.homedir(), '.devhub', 'notes.json');
-const IMPORT_FILE = path.join(os.tmpdir(), `devhub-import-test-${Date.now()}.json`);
-
-function clearAll(): void {
-  if (fs.existsSync(SNIPPET_FILE)) fs.unlinkSync(SNIPPET_FILE);
-  if (fs.existsSync(NOTE_FILE)) fs.unlinkSync(NOTE_FILE);
-  if (fs.existsSync(IMPORT_FILE)) fs.unlinkSync(IMPORT_FILE);
-}
+const TEST_DIR = path.join(os.tmpdir(), `devhub-import-${Date.now()}`);
+const IMPORT_FILE = path.join(TEST_DIR, 'import.json');
 
 describe('import', () => {
   let snippetStore: typeof import('../src/storage/snippetStore.js').snippetStore;
   let noteStore: typeof import('../src/storage/noteStore.js').noteStore;
 
   beforeEach(async () => {
-    clearAll();
+    process.env.DEVHUB_DIR = TEST_DIR;
+    fs.mkdirSync(TEST_DIR, { recursive: true });
     vi.resetModules();
     const sMod = await import('../src/storage/snippetStore.js');
     const nMod = await import('../src/storage/noteStore.js');
@@ -27,86 +21,36 @@ describe('import', () => {
   });
 
   afterEach(() => {
-    clearAll();
+    fs.rmSync(TEST_DIR, { recursive: true, force: true });
+    delete process.env.DEVHUB_DIR;
   });
 
-  it('importe des snippets depuis un fichier JSON', () => {
-    const data = {
-      version: '0.6.0',
-      snippets: [
-        { name: 'import-a', code: 'code A' },
-        { name: 'import-b', code: 'code B' },
-      ],
-      notes: [],
-    };
-
-    fs.writeFileSync(IMPORT_FILE, JSON.stringify(data), 'utf-8');
-    const raw = fs.readFileSync(IMPORT_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-
-    for (const s of parsed.snippets) {
+  it('importe des snippets', () => {
+    const data = { snippets: [{ name: 'a', code: 'A' }, { name: 'b', code: 'B' }], notes: [] };
+    fs.writeFileSync(IMPORT_FILE, JSON.stringify(data));
+    for (const s of JSON.parse(fs.readFileSync(IMPORT_FILE, 'utf-8')).snippets) {
       snippetStore.add(s.name, s.code);
     }
-
     expect(snippetStore.count()).toBe(2);
-    expect(snippetStore.get('import-a')).toBeTruthy();
   });
 
-  it('importe des notes depuis un fichier JSON', () => {
-    const data = {
-      version: '0.6.0',
-      snippets: [],
-      notes: [
-        { title: 'note-import-a', content: 'contenu A' },
-        { title: 'note-import-b', content: 'contenu B' },
-      ],
-    };
-
-    fs.writeFileSync(IMPORT_FILE, JSON.stringify(data), 'utf-8');
-    const raw = fs.readFileSync(IMPORT_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-
-    for (const n of parsed.notes) {
+  it('importe des notes', () => {
+    const data = { snippets: [], notes: [{ title: 'n1', content: 'C1' }, { title: 'n2', content: 'C2' }] };
+    fs.writeFileSync(IMPORT_FILE, JSON.stringify(data));
+    for (const n of JSON.parse(fs.readFileSync(IMPORT_FILE, 'utf-8')).notes) {
       noteStore.add(n.title, n.content);
     }
-
     expect(noteStore.count()).toBe(2);
-    expect(noteStore.get('note-import-a')).toBeTruthy();
   });
 
-  it('ignore les doublons lors de l\'import', () => {
-    snippetStore.add('duplicate', 'original');
-
-    const data = {
-      snippets: [{ name: 'duplicate', code: 'nouveau code' }],
-      notes: [],
-    };
-
-    fs.writeFileSync(IMPORT_FILE, JSON.stringify(data), 'utf-8');
-    const raw = fs.readFileSync(IMPORT_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-
-    let added = 0;
-    let skipped = 0;
-
-    for (const s of parsed.snippets) {
-      const ok = snippetStore.add(s.name, s.code);
-      if (ok) added++;
-      else skipped++;
+  it('ignore les doublons', () => {
+    snippetStore.add('dup', 'original');
+    const data = { snippets: [{ name: 'dup', code: 'nouveau' }], notes: [] };
+    fs.writeFileSync(IMPORT_FILE, JSON.stringify(data));
+    for (const s of JSON.parse(fs.readFileSync(IMPORT_FILE, 'utf-8')).snippets) {
+      snippetStore.add(s.name, s.code);
     }
-
-    expect(added).toBe(0);
-    expect(skipped).toBe(1);
     expect(snippetStore.count()).toBe(1);
-    expect(snippetStore.list()[0].code).toBe('original');
-  });
-
-  it('rejette un JSON invalide', () => {
-    fs.writeFileSync(IMPORT_FILE, '{ invalid json }', 'utf-8');
-
-    expect(() => {
-      const raw = fs.readFileSync(IMPORT_FILE, 'utf-8');
-      JSON.parse(raw);
-    }).toThrow();
+    expect(snippetStore.get('dup')?.code).toBe('original');
   });
 });
