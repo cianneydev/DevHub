@@ -32,7 +32,7 @@ describe('import', () => {
 
   it('importe des snippets depuis un fichier JSON', () => {
     const data = {
-      version: '0.5.0',
+      version: '0.6.0',
       snippets: [
         { name: 'import-a', code: 'code A' },
         { name: 'import-b', code: 'code B' },
@@ -54,7 +54,7 @@ describe('import', () => {
 
   it('importe des notes depuis un fichier JSON', () => {
     const data = {
-      version: '0.5.0',
+      version: '0.6.0',
       snippets: [],
       notes: [
         { title: 'note-import-a', content: 'contenu A' },
