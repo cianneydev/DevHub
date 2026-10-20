@@ -1,27 +1,24 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
-const STORE_FILE = path.join(os.homedir(), '.devhub', 'snippets.json');
-
-function clearStore(): void {
-  if (fs.existsSync(STORE_FILE)) {
-    fs.unlinkSync(STORE_FILE);
-  }
-}
+const TEST_DIR = path.join(os.tmpdir(), `devhub-snippet-${Date.now()}`);
 
 describe('snippetStore', () => {
   let snippetStore: typeof import('../src/storage/snippetStore.js').snippetStore;
 
   beforeEach(async () => {
-    clearStore();
+    process.env.DEVHUB_DIR = TEST_DIR;
+    fs.mkdirSync(TEST_DIR, { recursive: true });
+    vi.resetModules();
     const mod = await import('../src/storage/snippetStore.js');
     snippetStore = mod.snippetStore;
   });
 
   afterEach(() => {
-    clearStore();
+    fs.rmSync(TEST_DIR, { recursive: true, force: true });
+    delete process.env.DEVHUB_DIR;
   });
 
   it('démarre avec 0 snippet', () => {
