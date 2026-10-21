@@ -13,7 +13,7 @@
   <a href="https://github.com/cianneydev/DevHub/releases/latest"><img src="https://img.shields.io/github/v/release/cianneydev/DevHub?color=blue&label=release" alt="Release"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.3-blue" alt="TypeScript"></a>
-  <a href="https://www.npmjs.com/package/devhub"><img src="https://img.shields.io/npm/v/devhub?color=red&label=npm" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/devhub-cli"><img src="https://img.shields.io/npm/v/devhub-cli?color=red&label=npm" alt="npm"></a>
 </p>
 
 ---
@@ -25,7 +25,7 @@
 - 📓 **Notes** — Prenez des notes rapides sans quitter le terminal
 - 🔍 **Recherche** — Retrouvez tout par nom ou par contenu, instantanément
 - 📊 **Statistiques** — Visualisez votre utilisation (snippets, notes, tailles)
-- 💾 **Export / Import** — Sauvegardez et restaurez vos données en JSON
+- 💾 **Export / Import** — Sauvegardez et restaorez vos données en JSON
 - 🖥️ **Interface interactive (TUI)** — Naviguez avec les flèches ↑↓ et Entrée
 - ⚡ **Ultra léger** — Seulement 5 dépendances
 - 🔒 **100% local** — Vos données ne quittent jamais votre machine
@@ -35,7 +35,7 @@
 
 ## 📦 Installation
 
-### Via npm (bientôt disponible)
+### Via npm
 
 ```bash
-npm install -g devhub
+npm install -g devhub-cli
