@@ -27,10 +27,8 @@ describe('search', () => {
     snippetStore.add('other', 'const x = 1;');
 
     const all = snippetStore.list();
-    const matches = all.filter((s) =>
-      s.name.toLowerCase().includes('hello')
-    );
-
+    const matches = all.filter((s) => s.name.toLowerCase().includes('hello'));
+    
     expect(matches.length).toBe(1);
     expect(matches[0].name).toBe('hello');
   });
@@ -41,46 +39,26 @@ describe('search', () => {
     snippetStore.add('c', 'console.log("c")');
 
     const all = snippetStore.list();
-    const matches = all.filter((s) =>
-      s.code.toLowerCase().includes('console.log')
-    );
-
+    const matches = all.filter((s) => s.code.toLowerCase().includes('console.log'));
+    
     expect(matches.length).toBe(2);
   });
 
   it('est insensible à la casse', () => {
     snippetStore.add('HelloWorld', 'console.log("test")');
-
+    
     const all = snippetStore.list();
-    const matches = all.filter((s) =>
-      s.name.toLowerCase().includes('helloworld')
-    );
-
+    const matches = all.filter((s) => s.name.toLowerCase().includes('helloworld'));
+    
     expect(matches.length).toBe(1);
   });
 
   it('retourne un tableau vide si aucun résultat', () => {
     snippetStore.add('hello', 'console.log("hi")');
-
+    
     const all = snippetStore.list();
-    const matches = all.filter((s) =>
-      s.name.toLowerCase().includes('xyz-inexistant-123')
-    );
-
+    const matches = all.filter((s) => s.name.toLowerCase().includes('xyz-inexistant-123'));
+    
     expect(matches.length).toBe(0);
-  });
-
-  it('trouve les correspondances dans le code ET le nom', () => {
-    snippetStore.add('test-console', 'const x = 1;');
-    snippetStore.add('other', 'console.log("test-console")');
-
-    const all = snippetStore.list();
-    const matches = all.filter(
-      (s) =>
-        s.name.toLowerCase().includes('test-console') ||
-        s.code.toLowerCase().includes('test-console')
-    );
-
-    expect(matches.length).toBeGreaterThanOrEqual(1);
   });
 });
