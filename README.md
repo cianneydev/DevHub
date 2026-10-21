@@ -38,4 +38,4 @@
 ### Via npm
 
 ```bash
-npm install -g devhub-cli
+npm install -g @cianneydev/devhub-cli
