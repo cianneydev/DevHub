@@ -1,10 +1,7 @@
 {
-  "name": "@cianneydev/devhub-cli",
+  "name": "devhub-cli-cianneydev",
   "version": "0.7.1",
   "description": "Le hub central du développeur moderne — CLI tout-en-un",
-  "publishConfig": {
-    "access": "public"
-  },
   "type": "module",
   "bin": {
     "devhub": "./dist/index.js"
