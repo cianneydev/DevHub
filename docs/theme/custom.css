@@ -1,0 +1,14 @@
+/* Rend le logo rond comme sur GitHub */
+.VPNavBarTitle .logo {
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: transparent;
+}
+
+/* Ajuste la taille du logo sur mobile */
+@media (max-width: 768px) {
+  .VPNavBarTitle .logo {
+    width: 32px;
+    height: 32px;
+  }
+}
