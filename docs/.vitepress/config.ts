@@ -7,8 +7,8 @@ export default defineConfig({
   // ✅ Correspond exactement au nom du dépôt en minuscules
   base: '/devhub/',
 
-  // ✅ Enlève les .html des URLs
-  cleanUrls: true,
+  // ✅ Désactivé pour éviter les problèmes de routage sur GitHub Pages
+  cleanUrls: false,
 
   ignoreDeadLinks: true,
 
