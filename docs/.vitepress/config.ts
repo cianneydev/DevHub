@@ -4,10 +4,19 @@ export default defineConfig({
   title: 'DevHub',
   description: 'Le hub central du développeur moderne — CLI tout-en-un',
 
-  // ✅ Casse corrigée pour correspondre à l'URL GitHub Pages
-  base: '/DevHub/',
+  // ✅ Correspond exactement au nom du dépôt en minuscules
+  base: '/devhub/',
+
+  // ✅ Enlève les .html des URLs
+  cleanUrls: true,
 
   ignoreDeadLinks: true,
+
+  // ✅ Balise canonique et vérification Google mises à jour
+  head: [
+    ['link', { rel: 'canonical', href: 'https://cianneydev.github.io/devhub/' }],
+    ['meta', { name: 'google-site-verification', content: 'B0jPipYXxtLdEwcxLnoEd1IOGEAhoHw_V9UACXFrew' }]
+  ],
 
   themeConfig: {
     logo: '/logo.png',
@@ -15,7 +24,7 @@ export default defineConfig({
     nav: [
       { text: 'Accueil', link: '/' },
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'GitHub', link: 'https://github.com/cianneydev/DevHub' },
+      { text: 'GitHub', link: 'https://github.com/cianneydev/devhub' },
     ],
 
     sidebar: [
@@ -29,7 +38,7 @@ export default defineConfig({
         text: '📚 Commandes',
         items: [
           { text: 'Snippets', link: '/guide/snippets' },
-          { text: 'Copier', link: '/guide/copy' },      // ← ✅ LA LIGNE MANQUANTE
+          { text: 'Copier', link: '/guide/copy' },
           { text: 'Notes', link: '/guide/notes' },
           { text: 'Recherche', link: '/guide/search' },
           { text: 'Avancé', link: '/guide/advanced' },
@@ -39,7 +48,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/cianneydev/DevHub' },
+      { icon: 'github', link: 'https://github.com/cianneydev/devhub' },
     ],
 
     footer: {
