@@ -1,13 +1,11 @@
-/* Force le logo à être rond et à masquer les coins noirs */
+/* Logo rond et propre */
 .VPNavBarTitle .logo {
   border-radius: 50% !important;
-  object-fit: cover !important;
+  object-fit: contain !important; /* contain est mieux pour un logo transparent */
   background-color: transparent !important;
   border: none !important;
-  /* ✨ MAGIE : le noir devient transparent sur fond sombre */
-  mix-blend-mode: screen !important;
   
-  /* Force une taille de bureau normale */
+  /* Taille sur ordinateur */
   width: 36px !important;
   height: 36px !important;
   max-width: 36px !important;
@@ -15,24 +13,24 @@
   margin-right: 10px !important;
 }
 
-/* Force la taille du texte "DevHub" sur bureau */
+/* Taille du texte DevHub */
 .VPNavBarTitle .title {
   font-size: 1.2rem !important;
   font-weight: 700 !important;
   line-height: 1 !important;
 }
 
-/* 🎯 CORRECTION SPÉCIALE MOBILE */
+/* 📱 Taille sur mobile */
 @media (max-width: 768px) {
   .VPNavBarTitle .logo {
-    width: 28px !important;
-    height: 28px !important;
-    min-width: 28px !important;
-    max-width: 28px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    max-width: 30px !important;
     margin-right: 8px !important;
   }
   
   .VPNavBarTitle .title {
-    font-size: 1rem !important; /* Réduit la taille du texte */
+    font-size: 1.1rem !important; 
   }
 }
